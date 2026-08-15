@@ -66,27 +66,61 @@ bash train.sh
 
 ## 📊 素材收集指南
 
-### 最佳素材来源
+### 🌟 成人/色情素材来源（推荐优先）
 
-1. **YouTube** — 搜索关键词：
-   - "beautiful woman slow motion"
-   - "lingerie photoshoot slow motion"
-   - "wet dress slow motion"
-   - "anime girl dancing"
-   - "silky dress cinematic"
+#### 1. RedGifs ⭐⭐⭐⭐⭐（最佳）
+- **网址**: https://www.redgifs.com
+- **特点**: 短视频/GIF，完美适合训练，无水印
+- **搜索词**: `bikini`, `lingerie`, `wet`, `swimsuit`, `thong`, `sheer`, `gravure`
+- **命令**:
+  ```bash
+  python collect.py --source redgifs --keywords "bikini,lingerie,wet,swimsuit,thong,gravure" --count 30
+  ```
 
-2. **Twitter/X** — 关注标签：
-   - #slowmotion
-   - #cinematic
-   - #anime
-   - #bikini
-   - #lingerie
+#### 2. Xvideos ⭐⭐⭐⭐
+- **网址**: https://www.xvideos.com
+- **特点**: 量大，慢动作视频多
+- **搜索词**: `slow motion`, `bikini`, `wet`, `swimsuit`, `lingerie`
+- **命令**:
+  ```bash
+  python collect.py --source xvideos --keywords "bikini slow motion,wet swimsuit,lingerie" --count 30
+  ```
 
-3. **Reddit** — 推荐子版块：
-   - r/facelesspods（无脸女性）
-   - r/wallsofsluts（各种场景）
-   - r/animemes（动漫素材）
-   - r/stitchers（视频素材）
+#### 3. SpankWire ⭐⭐⭐⭐
+- **网址**: https://www.spankwire.com
+- **特点**: 短片段丰富，质量高
+- **命令**:
+  ```bash
+  python collect.py --source spankwire --keywords "bikini,wet,silky dress,lingerie" --count 30
+  ```
+
+#### 4. Reddit 成人板块 ⭐⭐⭐⭐
+| Subreddit | 内容 | 命令 |
+|-----------|------|------|
+| r/facelesspods | 无脸女性视频 | `--source reddit --subreddit facelesspods` |
+| r/wallsofsluts | 各种场景 | `--source reddit --subreddit wallsofsluts` |
+| r/underboob | 胸部特写 | `--source reddit --subreddit underboob` |
+| r/thighhighs | 过膝袜 | `--source reddit --subreddit thighhighs` |
+| r/wetandteasing | 湿身 | `--source reddit --subreddit wetandteasing` |
+| r/animatedporn | 动漫色情 | `--source reddit --subreddit animatedporn` |
+| r/lewdanimemes | 动漫表情包 | `--source reddit --subreddit lewdanimemes` |
+
+### 其他来源
+
+#### YouTube
+- 搜索关键词：`"beautiful woman slow motion"`, `"lingerie photoshoot"`, `"wet dress slow motion"`, `"anime girl dancing"`, `"silky dress cinematic"`
+
+#### Twitter/X
+- 搜索标签：`#slowmotion` `#bikini` `#lingerie` `#gravure` `#swimsuit` `#wet` `#thong` `#sheer`
+
+#### 免费素材网站
+- Pexels (pexels.com) — 免费商用
+- Pixabay (pixabay.com) — 免费量大
+- Mixkit (mixkit.co) — 电影感素材
+
+#### Gravure 网站
+- gravure365.jp — 日本写真偶像
+- Manapla.com — 偶像写真
 
 4. **Pexels/Pixabay** — 免费素材网站
 

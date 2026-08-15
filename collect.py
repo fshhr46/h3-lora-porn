@@ -230,13 +230,218 @@ class RedditCollector:
 
 
 # ============================================================
+# RedGifs 收集器（成人短视频最佳来源）
+# ============================================================
+
+class RedGifsCollector:
+    """从 RedGifs 收集成人短视频素材"""
+
+    def __init__(self, output_dir):
+        self.output_dir = Path(output_dir) / 'redgifs'
+        self.api_base = 'https://api.redgifs.com/v3'
+        self.token = None
+
+    def _authenticate(self):
+        """获取 RedGifs API token"""
+        try:
+            import requests
+            resp = requests.post(f'{self.api_base}/tokens', headers={'Content-Type': 'application/json'})
+            if resp.status_code == 200:
+                self.token = resp.json().get('token')
+                print("  ✅ RedGifs API 认证成功")
+        except Exception as e:
+            print(f"  ⚠️  RedGifs API 认证失败: {e}")
+
+    def search_and_download(self, keywords, count=30):
+        """搜索并下载 RedGifs 视频"""
+        if not HAS_YTDLP:
+            print("❌ yt_dlp 未安装")
+            return 0
+
+        self._authenticate()
+        if not self.token:
+            print("  ❌ 无法获取 API token")
+            return 0
+
+        downloaded = 0
+        headers = {'Authorization': f'Bearer {self.token}'}
+        self.output_dir.mkdir(parents=True, exist_ok=True)
+
+        for keyword in keywords.split(','):
+            keyword = keyword.strip()
+            if not keyword:
+                continue
+
+            print(f"\n🔍 搜索 RedGifs: {keyword}")
+            search_query = f"ytsearch{count}:redgifs.com {keyword}"
+
+            ydl_opts = {
+                'format': 'bestvideo[ext=mp4]/best[ext=mp4]/best',
+                'outtmpl': str(self.output_dir / '%(id)s.%(ext)s'),
+                'noplaylist': True,
+                'max_downloads': 1,
+            }
+
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                try:
+                    info = ydl.extract_info(search_query, download=False)
+                    gifs = info.get('entries', [])
+
+                    for gif in gifs[:count]:
+                        if downloaded >= count:
+                            break
+
+                        gif_id = gif.get('id')
+                        url = gif.get('webpage_url', '')
+
+                        if 'redgifs.com' not in url:
+                            continue
+
+                        try:
+                            ydl.download([url])
+                            print(f"  ✅ 已下载 RedGifs")
+                            downloaded += 1
+                        except Exception as e:
+                            print(f"  ❌ 下载失败: {e}")
+
+                        time.sleep(1)
+
+                except Exception as e:
+                    print(f"  ❌ 搜索失败: {e}")
+
+        return downloaded
+
+
+# ============================================================
+# Xvideos 收集器
+# ============================================================
+
+class XvideosCollector:
+    """从 Xvideos 收集视频素材"""
+
+    def __init__(self, output_dir):
+        self.output_dir = Path(output_dir) / 'xvideos'
+        self.ydl_opts = {
+            'format': 'bestvideo[ext=mp4]/best[ext=mp4]/best',
+            'outtmpl': str(self.output_dir / '%(id)s.%(ext)s'),
+            'noplaylist': True,
+            'max_downloads': 1,
+        }
+
+    def search_and_download(self, keywords, count=20):
+        """搜索并下载 Xvideos 视频"""
+        if not HAS_YTDLP:
+            print("❌ yt_dlp 未安装")
+            return 0
+
+        downloaded = 0
+        self.output_dir.mkdir(parents=True, exist_ok=True)
+
+        for keyword in keywords.split(','):
+            keyword = keyword.strip()
+            if not keyword:
+                continue
+
+            print(f"\n🔍 搜索 Xvideos: {keyword}")
+            search_query = f"ytsearch{count}:xvideos.com {keyword}"
+
+            with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
+                try:
+                    info = ydl.extract_info(search_query, download=False)
+                    videos = info.get('entries', [])
+
+                    for video in videos[:count]:
+                        if downloaded >= count:
+                            break
+
+                        url = video.get('webpage_url', '')
+                        if 'xvideos.com' not in url:
+                            continue
+
+                        try:
+                            ydl.download([url])
+                            print(f"  ✅ 已下载 Xvideos")
+                            downloaded += 1
+                        except Exception as e:
+                            print(f"  ❌ 下载失败: {e}")
+
+                        time.sleep(2)
+
+                except Exception as e:
+                    print(f"  ❌ 搜索失败: {e}")
+
+        return downloaded
+
+
+# ============================================================
+# SpankWire 收集器（短片段素材）
+# ============================================================
+
+class SpankWireCollector:
+    """从 SpankWire 收集短片段素材"""
+
+    def __init__(self, output_dir):
+        self.output_dir = Path(output_dir) / 'spankwire'
+        self.ydl_opts = {
+            'format': 'bestvideo[ext=mp4]/best[ext=mp4]/best',
+            'outtmpl': str(self.output_dir / '%(id)s.%(ext)s'),
+            'noplaylist': True,
+            'max_downloads': 1,
+        }
+
+    def search_and_download(self, keywords, count=20):
+        """搜索并下载 SpankWire 视频"""
+        if not HAS_YTDLP:
+            print("❌ yt_dlp 未安装")
+            return 0
+
+        downloaded = 0
+        self.output_dir.mkdir(parents=True, exist_ok=True)
+
+        for keyword in keywords.split(','):
+            keyword = keyword.strip()
+            if not keyword:
+                continue
+
+            print(f"\n🔍 搜索 SpankWire: {keyword}")
+            search_query = f"ytsearch{count}:spankwire.com {keyword}"
+
+            with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
+                try:
+                    info = ydl.extract_info(search_query, download=False)
+                    videos = info.get('entries', [])
+
+                    for video in videos[:count]:
+                        if downloaded >= count:
+                            break
+
+                        url = video.get('webpage_url', '')
+                        if 'spankwire.com' not in url:
+                            continue
+
+                        try:
+                            ydl.download([url])
+                            print(f"  ✅ 已下载 SpankWire")
+                            downloaded += 1
+                        except Exception as e:
+                            print(f"  ❌ 下载失败: {e}")
+
+                        time.sleep(1)
+
+                except Exception as e:
+                    print(f"  ❌ 搜索失败: {e}")
+
+        return downloaded
+
+
+# ============================================================
 # 主程序
 # ============================================================
 
 def main():
     parser = argparse.ArgumentParser(description='视频素材收集器')
     parser.add_argument('--source', type=str, required=True,
-                        choices=['youtube', 'twitter', 'reddit'],
+                        choices=['youtube', 'twitter', 'reddit', 'redgifs', 'xvideos', 'spankwire'],
                         help='数据源')
     parser.add_argument('--keywords', type=str, default='beautiful woman,slow motion',
                         help='搜索关键词（逗号分隔）')
@@ -264,6 +469,15 @@ def main():
     elif args.source == 'reddit':
         collector = RedditCollector(output_dir)
         collected = collector.search_and_download(args.subreddit, args.count)
+    elif args.source == 'redgifs':
+        collector = RedGifsCollector(output_dir)
+        collected = collector.search_and_download(args.keywords, args.count)
+    elif args.source == 'xvideos':
+        collector = XvideosCollector(output_dir)
+        collected = collector.search_and_download(args.keywords, args.count)
+    elif args.source == 'spankwire':
+        collector = SpankWireCollector(output_dir)
+        collected = collector.search_and_download(args.keywords, args.count)
     else:
         print(f"❌ 不支持的源: {args.source}")
         return
