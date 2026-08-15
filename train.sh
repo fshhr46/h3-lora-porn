@@ -1,6 +1,7 @@
 #!/bin/bash
 # ============================================
 # LoRA 训练一键脚本 - MiniMax H3 视频模型
+# 支持: 普通 LoRA / Temporal LoRA / Frame Diff LoRA
 # ============================================
 
 set -e
@@ -11,9 +12,8 @@ echo "============================================"
 
 # ---------- 配置 ----------
 BASE_MODEL="stabilityai/stable-diffusion-xl-base-1.0"
-# 或 SD1.5: runwayml/stable-diffusion-v1-5
-# 或 SDXL:   stabilityai/stable-diffusion-xl-base-1.0
 
+# 默认参数（普通 LoRA）
 LORA_RANK=32
 LORA_ALPHA=16
 EPOCHS=15
@@ -57,8 +57,12 @@ echo "[3/6] 检查训练数据..."
 
 if [ ! -d "$DATA_DIR" ] || [ -z "$(ls -A $DATA_DIR 2>/dev/null)" ]; then
     echo "⚠️  数据目录 $DATA_DIR 为空或不存在"
-    echo "   请先将训练素材放入 data/filtered/ 目录"
-    echo "   参考 README.md 中的素材收集指南"
+    echo ""
+    echo "   请先准备训练数据:"
+    echo "   1. 收集素材: python collect.py --source redgifs --keywords 'bikini,lingerie' --count 30"
+    echo "   2. 预处理:   python preprocess_enhanced.py --mode images --input data/raw --output data/cropped"
+    echo "   3. 筛选后放入: data/filtered/"
+    echo ""
     read -p "是否继续（使用空数据）？[y/N] " -n 1 -r
     echo
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
@@ -66,7 +70,7 @@ if [ ! -d "$DATA_DIR" ] || [ -z "$(ls -A $DATA_DIR 2>/dev/null)" ]; then
     fi
 fi
 
-DATA_COUNT=$(find "$DATA_DIR" -type f | wc -l)
+DATA_COUNT=$(find "$DATA_DIR" -type f 2>/dev/null | wc -l)
 echo "   找到 $DATA_COUNT 个训练文件"
 
 if [ "$DATA_COUNT" -lt 10 ]; then
@@ -95,8 +99,7 @@ echo "   混合精度: $MIXED_PRECISION"
 echo "   输出目录: $OUTPUT_DIR"
 echo "============================================"
 
-# ---------- 训练命令（根据实际框架调整）----------
-# 使用 diffusers/PEFT 训练 LoRA:
+# ---------- 训练命令 ----------
 python train_lora.py \
     --base_model "$BASE_MODEL" \
     --data_dir "$DATA_DIR" \
@@ -119,8 +122,18 @@ echo "============================================"
 echo "✅ LoRA 模型已保存到: $OUTPUT_DIR/"
 echo ""
 echo "下一步："
-echo "1. 前往 output/videos/ 查看生成测试结果"
-echo "2. 使用 prompts/video_prompts.txt 中的提示词"
-echo "3. 在 H3 平台上加载 LoRA 进行视频生成"
-echo "4. LoRA 权重从 0.5 开始尝试，逐步调整"
+echo "📖 查看完整文档: README.md"
+echo ""
+echo "📝 其他训练模式:"
+echo ""
+echo "  🎬 Temporal LoRA (时序序列):"
+echo "    python preprocess_enhanced.py --mode temporal --input data/raw --output data/temporal"
+echo "    python train_video_lora.py --mode temporal --video_dir data/temporal --output_dir output/models/temporal"
+echo ""
+echo "  🎞️  Frame Diff LoRA (帧差对):"
+echo "    python preprocess_enhanced.py --mode framediff --input data/raw --output data/framediff"
+echo "    python train_video_lora.py --mode frame_diff --video_dir data/framediff --output_dir output/models/framediff"
+echo ""
+echo "  🎨 提示词: prompts/video_prompts.txt"
+echo "  ⚖️  LoRA 权重从 0.5 开始尝试"
 echo "============================================"

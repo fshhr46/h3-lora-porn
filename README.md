@@ -6,22 +6,28 @@
 
 ```
 ├── data/
-│   ├── raw/              # 原始下载的视频素材（未处理）
-│   ├── cropped/          # 裁剪后的训练素材（1280x720 或 512x512）
+│   ├── raw/              # 原始下载的视频素材
+│   ├── cropped/          # 静态图片（普通 LoRA 训练）
+│   ├── temporal/         # 时序序列（Temporal LoRA 训练）
+│   ├── framediff/        # 帧差对（Frame Diff LoRA 训练）
 │   └── filtered/         # 人工筛选后的高质量素材
 ├── output/
-│   ├── models/           # 训练好的 LoRA 模型文件
+│   ├── models/           # 训练好的 LoRA 模型
 │   └── videos/           # 生成的测试视频
-├── train.sh              # 一键训练脚本
-├── collect.py            # 素材收集脚本（YouTube/Twitter/Reddit）
-├── preprocess.py         # 素材预处理脚本（抽帧、裁剪、分类）
+├── train.sh              # 一键训练脚本（含高级模式）
+├── collect.py            # 素材收集脚本（支持成人网站）
+├── preprocess.py         # 基础预处理（抽帧、裁剪）
+├── preprocess_enhanced.py# 增强预处理（支持时序/帧差提取）
+├── train_lora.py         # 普通 LoRA 训练（静态图片）
+├── train_video_lora.py   # 高级视频 LoRA 训练（时序/帧差）
+├── generate.py           # LoRA 测试生成
 ├── train_config.yaml     # 训练配置
 ├── prompts/              # 提示词模板
 │   ├── positive_prompts.txt
 │   ├── negative_prompts.txt
 │   └── video_prompts.txt
 ├── requirements.txt
-└── README.md             # 本文件
+└── README.md
 ```
 
 ---
@@ -44,8 +50,17 @@ python collect.py --source reddit --subreddit "r/facelesspods r/undressapp" --co
 
 ### Step 3: 预处理
 
+**选择训练模式：**
+
 ```bash
-python preprocess.py --input data/raw --output data/cropped --fps 8 --resolution 512x512
+# 模式 A: 普通 LoRA（静态图片）— 入门
+python preprocess_enhanced.py --mode images --input data/raw --output data/cropped --fps 8
+
+# 模式 B: Temporal LoRA（时序序列）— 进阶
+python preprocess_enhanced.py --mode temporal --input data/raw --output data/temporal --fps 8 --seq_length 8
+
+# 模式 C: Frame Diff LoRA（帧差对）— 进阶
+python preprocess_enhanced.py --mode framediff --input data/raw --output data/framediff
 ```
 
 ### Step 4: 人工筛选
@@ -54,8 +69,17 @@ python preprocess.py --input data/raw --output data/cropped --fps 8 --resolution
 
 ### Step 5: 训练 LoRA
 
+**选择训练模式：**
+
 ```bash
+# 模式 A: 普通 LoRA（静态图片）
 bash train.sh
+
+# 模式 B: Temporal LoRA（时序序列）
+python train_video_lora.py --mode temporal --video_dir data/temporal --output_dir output/models/temporal --epochs 20
+
+# 模式 C: Frame Diff LoRA（帧差对）
+python train_video_lora.py --mode frame_diff --video_dir data/framediff --output_dir output/models/framediff --epochs 20
 ```
 
 ### Step 6: 测试生成
@@ -188,3 +212,83 @@ extra limbs, watermark, text
 3. **LoRA 权重** — 在 H3 上测试时，从 0.5 开始逐步调高权重
 4. **风格一致性** — 所有素材应尽量保持一致的风格（真人/动漫/插画）
 5. **版权注意** — 训练素材用于生成视频时注意版权问题
+
+---
+
+## 🚀 高级：视频序列 LoRA 训练
+
+### 为什么需要？
+
+普通 LoRA 只用静态图片训练，学会的是**外观风格**。
+视频序列 LoRA 学习的是**运动模式**和**帧间关系**，能生成更自然的动态效果。
+
+### 三种训练模式对比
+
+| 模式 | 训练数据 | 学习什么 | 难度 | 效果 |
+|------|----------|----------|------|------|
+| **普通 LoRA** | 静态图片 | 外观/风格/服装 | ⭐ | 静态风格强，动态一般 |
+| **Temporal LoRA** | 帧序列 (8帧) | 运动模式/时序关系 | ⭐⭐⭐ | 动态更自然 |
+| **Frame Diff LoRA** | 相邻帧对 | 帧间变化 | ⭐⭐ | 轻量，适合微调 |
+
+### Temporal LoRA 原理
+
+```
+视频: [帧1][帧2][帧3][帧4][帧5][帧6][帧7][帧8]
+            ↓ 抽帧 + 排序
+序列: {frame_0, frame_1, ..., frame_7}
+            ↓ 训练
+时序 LoRA 权重 → 学习 frame_i → frame_{i+1} 的转换
+            ↓ 推理时
+给定初始帧 + 提示词 → 模型预测后续帧 → 生成视频
+```
+
+### Frame Diff LoRA 原理
+
+```
+视频帧对: (frame_A, frame_B)
+            ↓
+帧差 = frame_B - frame_A
+            ↓ 训练
+帧差 LoRA → 学习如何从 A 变换到 B
+            ↓ 推理时
+输入帧 A + 帧差 LoRA → 预测帧 B → 拼接成视频
+```
+
+### 使用示例
+
+```bash
+# 1. 提取时序序列
+python preprocess_enhanced.py --mode temporal \
+    --input data/raw \
+    --output data/temporal \
+    --fps 8 \
+    --seq_length 8
+
+# 2. 训练时序 LoRA
+python train_video_lora.py --mode temporal \
+    --video_dir data/temporal \
+    --output_dir output/models/temporal \
+    --epochs 20 \
+    --seq_length 8 \
+    --batch_size 2 \
+    --learning_rate 1e-4
+
+# 3. 或使用帧差模式
+python preprocess_enhanced.py --mode framediff \
+    --input data/raw \
+    --output data/framediff
+
+python train_video_lora.py --mode frame_diff \
+    --video_dir data/framediff \
+    --output_dir output/models/framediff \
+    --epochs 20
+```
+
+### 混合使用（推荐）
+
+```
+1. 先用普通 LoRA 训练外观风格
+2. 再用 Temporal LoRA 训练运动模式
+3. 在 H3 上同时加载两种 LoRA
+4. 效果最佳
+```
