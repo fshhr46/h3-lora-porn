@@ -1,0 +1,77 @@
+# H3 (海螺) 视频生成提示词模板 - 配合 LoRA 使用
+# 将 [STYLE] 替换为实际风格，[SCENE] 替换为场景
+
+# ============================================
+# 动画风格
+# ============================================
+
+# 模板 1: 卧室早晨
+"Anime style, beautiful girl waking up in bed, morning sunlight through window, thin white camisole, stretching lazily, soft pastel colors, gentle camera zoom, dreamy atmosphere"
+
+# 模板 2: 海边
+"Anime style, beautiful girl walking on beach, thin flowing sundress, ocean breeze, hair blowing, sunset golden hour, slow motion waves, cinematic composition"
+
+# 模板 3: 雨中
+"Anime style, girl under streetlamp in rain, thin black dress clinging, water droplets, steam from body heat, neon lights reflection, cinematic mood, slow motion rain"
+
+# 模板 4: 泳池边
+"Anime style, girl by the poolside, thin swimsuit, water dripping, wet hair, sunlight on water, relaxed pose, bright colors, gentle camera pan"
+
+# 模板 5: 浴室
+"Anime style, girl in bathroom, steam on mirror, wet skin, thin towel, water drops, soft warm lighting, intimate atmosphere, close-up"
+
+
+# ============================================
+# 真人写实风格
+# ============================================
+
+# 模板 6: 丝绸裙
+"Cinematic shot, beautiful woman in a silky champagne dress, soft lighting, slow motion, she turns gracefully, dress flowing, close-up on details, warm color grading"
+
+# 模板 7: 湿身效果
+"Cinematic, young woman swimming in ocean, wet thin white dress clinging to body, water splashing, sunlit waves, slow motion, beach sunset, romantic mood"
+
+# 模板 8: 卧室
+"Cinematic, woman in bedroom, morning light, wearing thin silk pajamas, stretching, soft focus, intimate atmosphere, gentle camera movement"
+
+# 模板 9: 晚宴
+"Cinematic, woman in evening gown, slow motion walking, red dress flowing, golden hour lighting, bokeh background, elegant pose"
+
+# 模板 10: 雨中街道
+"Cinematic, woman on rainy street, thin black dress, water droplets on skin, streetlight glow, neon reflections, moody atmosphere, slow motion"
+
+
+# ============================================
+# 插画/艺术风格
+# ============================================
+
+# 模板 11: 油画风格
+"Oil painting style, beautiful woman, soft brushstrokes, warm palette, flowing fabric, golden hour light, artistic composition, slow camera movement"
+
+# 模板 12: 水彩风格
+"Watercolor painting style, ethereal woman, soft edges, pastel colors, flowing dress, dreamy atmosphere, gentle movement, artistic mood"
+
+
+# ============================================
+# H3 专用提示技巧
+# ============================================
+
+# 权重语法（如果 H3 支持）:
+"beautiful woman:1.2, silky dress:1.3, bare shoulders:1.4, soft lighting:1.1, slow motion:1.0"
+
+# 中文提示（H3 对中文理解极好）:
+"电影质感，美丽女子穿着丝绸连衣裙，阳光洒落，柔焦效果，慢动作，裙摆飘动，温暖色调"
+
+# 分步生成提示:
+# Step 1: "女子在卧室中，穿着丝绸睡衣，早晨阳光"
+# Step 2: "（上传上一步结果）丝绸睡衣微微透明，她轻轻转身"
+# Step 3: "（上传上一步结果）睡衣滑落肩膀，露出锁骨"
+# Step 4: "（上传上一步结果）丝绸贴身，隐约可见身体曲线"
+
+# LoRA 权重建议:
+# 在 H3 中使用 LoRA 时，权重从 0.5 开始尝试
+# 如果效果不够明显，逐步增加到 0.7, 0.8, 1.0
+# 如果过拟合/失真，降低到 0.3, 0.4
+
+# 负面提示（如果 H3 支持负向输入）:
+"low quality, blurry, distorted, extra limbs, watermark, text"

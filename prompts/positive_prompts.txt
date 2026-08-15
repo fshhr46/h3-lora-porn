@@ -1,0 +1,66 @@
+# 正向提示词模板
+# 用于训练数据 captioning 和 LoRA 生成
+
+# 基础描述
+beautiful woman
+attractive female
+young woman
+elegant lady
+gorgeous woman
+
+# 身体/姿态
+graceful pose
+curvy figure
+slim figure
+beautiful silhouette
+gentle movement
+relaxed posture
+
+# 服装/材质
+silky dress
+satin dress
+thin cotton shirt
+sheer fabric
+translucent blouse
+lingerie
+evening gown
+tight dress
+flowing dress
+
+# 服装状态
+dress slightly lifted
+shirt clinging to body
+wet fabric
+bare shoulders
+slightly sheer
+fabric draping
+dress falling open
+straps slipping
+
+# 场景/环境
+bedroom morning light
+sunset beach
+rainy street
+dimly lit room
+luxury interior
+garden sunlight
+poolside
+bathroom steam
+
+# 光影/风格
+cinematic lighting
+soft focus
+bokeh background
+warm color grading
+golden hour
+moonlight glow
+natural lighting
+film grain
+slow motion
+
+# 镜头
+close up
+medium shot
+portrait angle
+gentle camera pan
+slow zoom

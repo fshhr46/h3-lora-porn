@@ -1,0 +1,55 @@
+# ============================================
+# LoRA 训练配置 - MiniMax H3 视频模型
+# ============================================
+
+# 基础模型
+base_model: "stabilityai/stable-diffusion-xl-base-1.0"
+# 或 SD1.5: "runwayml/stable-diffusion-v1-5"
+
+# 数据集路径
+data:
+  raw_dir: "data/raw"
+  cropped_dir: "data/cropped"
+  filtered_dir: "data/filtered"
+  
+# LoRA 参数
+lora:
+  rank: 32              # LoRA 秩 (8/16/32/64) — 32 是推荐起点
+  alpha: 16             # LoRA alpha，通常 = rank / 2
+  network_dim: 32       # 网络维度（同 rank）
+  
+# 训练参数
+training:
+  epochs: 15            # 训练轮数
+  batch_size: 4         # 批次大小（根据显存调整）
+  learning_rate: 1.0e-4 # 学习率
+  lr_scheduler: "cosine_with_restarts"
+  lr_warmup_steps: 100
+  resolution: [512, 512]  # 训练分辨率
+  seed: 42
+  
+# 数据增强
+augmentation:
+  flip: true            # 随机水平翻转
+  rotate: true          # 随机旋转（-10° 到 10°）
+  color_jitter: true    # 颜色抖动
+  noise_augment: true   # 噪声增强
+  
+# 优化器
+optimizer:
+  type: "AdamW"
+  weight_decay: 1.0e-2
+  eps: 1.0e-8
+  
+# 检查点
+checkpoint:
+  save_every: 2         # 每 N 轮保存检查点
+  output_dir: "output/models"
+  
+# 混合精度
+mixed_precision: "fp16"  # 使用 fp16 加速训练
+  
+# 日志
+logging:
+  log_every: 10         # 每 N 步记录日志
+  use_wandb: false      # 是否使用 Weights & Biases

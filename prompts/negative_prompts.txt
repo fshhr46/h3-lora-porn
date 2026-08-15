@@ -1,0 +1,53 @@
+# 负向提示词模板
+# 用于训练和生成时排除不需要的内容
+
+low quality
+worst quality
+blurry
+out of focus
+bad anatomy
+bad hands
+extra limbs
+missing limbs
+distorted face
+ugly
+duplicate
+morbid
+mutilated
+text
+watermark
+logo
+banner
+username
+error
+crop
+deformed
+mutations
+poorly drawn face
+poorly drawn hands
+extra fingers
+fewer fingers
+cropped
+half body
+lowres
+monochrome
+grayscale
+
+# 不需要的服装类型
+jacket
+coat
+hoodie
+sweater
+armor
+helmet
+mask
+glasses
+hat
+cap
+
+# 不需要的场景
+crowd
+street scene
+busy background
+outdoor festival
+concert

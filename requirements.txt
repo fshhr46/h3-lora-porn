@@ -1,0 +1,25 @@
+# Core dependencies
+torch>=2.0.0
+torchvision>=0.15.0
+diffusers>=0.25.0
+transformers>=4.36.0
+peft>=0.7.0
+accelerate>=0.25.0
+xformers>=0.0.23
+opencv-python-headless>=4.8.0
+Pillow>=10.0.0
+numpy>=1.24.0
+scipy>=1.11.0
+
+# Data collection
+yt-dlp>=2023.10.0
+moviepy>=1.0.3
+
+# Optional: Weights & Biases for experiment tracking
+# wandb>=0.16.0
+
+# Optional: gradio for demo
+# gradio>=4.0.0
+
+# Config
+pyyaml>=6.0
